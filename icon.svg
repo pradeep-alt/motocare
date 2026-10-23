@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="112" fill="#14251f"/>
+<circle cx="143" cy="344" r="62" fill="none" stroke="#b7d8c6" stroke-width="22"/>
+<circle cx="369" cy="344" r="62" fill="none" stroke="#b7d8c6" stroke-width="22"/>
+<path d="M143 344 L205 236 L280 344 L369 344 L315 251 L247 251" fill="none" stroke="#fff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M195 236 H250 M300 236 H328" stroke="#b7d8c6" stroke-width="22" stroke-linecap="round"/>
+<text x="256" y="125" font-family="Arial,sans-serif" font-size="55" font-weight="700" fill="#fff" text-anchor="middle">MOTO</text>
+</svg>

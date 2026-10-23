@@ -1,0 +1,15 @@
+{
+  "id": "./",
+  "name": "MotoCare Motorcycle Companion",
+  "short_name": "MotoCare",
+  "description": "Track motorcycle fuel, maintenance and ownership costs.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f3",
+  "theme_color": "#14251f",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

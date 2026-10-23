@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14251f">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>MotoCare — Motorcycle Companion</title>
+<style>
+:root{--bg:#f4f6f3;--card:#fff;--ink:#17231f;--muted:#69756f;--green:#176b4d;--line:#e1e8e2;--soft:#e8f3ec;--amber:#fff3d8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:#14251f;color:#fff;padding:25px 18px 22px;border-radius:0 0 24px 24px}
+.brand{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#b7d8c6;font-weight:800}.hero{font-size:28px;font-weight:800;margin:8px 0 4px}.sub{color:#d2dfd7;font-size:14px}
+main{max-width:720px;margin:auto;padding:16px 14px 42px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px #16291d08}
+.label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}.metric{font-size:23px;font-weight:800;margin-top:5px;overflow-wrap:anywhere}.small{font-size:13px;color:var(--muted);margin-top:3px}
+h2{font-size:18px;margin:5px 0 12px}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+button{border:0;border-radius:11px;padding:12px 14px;font:700 14px system-ui;cursor:pointer}
+.primary{background:var(--green);color:white}.secondary{background:var(--soft);color:var(--green)}.danger{background:#fce9e7;color:#9d2d25}.tabs{display:flex;gap:8px;overflow:auto;margin:15px 0}.tab{white-space:nowrap;background:#e7ece8;color:#3c4a42}.tab.active{background:#14251f;color:white}
+.panel{display:none}.panel.active{display:block}
+label{display:block;font-size:13px;font-weight:700;margin:12px 0 5px}input,select,textarea{width:100%;border:1px solid #d6dfd8;border-radius:10px;padding:12px;font:16px system-ui;background:#fff;color:var(--ink)}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formgrid>div{min-width:0}
+.item{border-top:1px solid var(--line);padding:12px 0}.item:first-child{border-top:0}.itemtitle{font-weight:750}.itemmeta{font-size:13px;color:var(--muted);margin-top:3px}.empty{padding:15px 0;color:var(--muted);font-size:14px}
+.notice{background:var(--amber);border-radius:12px;padding:12px;font-size:13px;margin-top:12px}
+footer{text-align:center;font-size:12px;color:var(--muted);padding:10px}
+@media(min-width:560px){main{padding-top:22px}.hero{font-size:34px}}
+</style>
+</head>
+<body>
+<header><div class="brand">MotoCare · PWA Prototype 0.3</div><div class="hero">Your bike. Your records.</div><div class="sub">Keep fuel, maintenance and ownership costs in one place.</div></header>
+<main>
+  <div class="card">
+    <div class="row"><div><div class="label">My motorcycle</div><div id="bikeName" style="font-size:20px;font-weight:800;margin-top:4px">My Motorcycle</div><div id="bikeMeta" class="small">Add your bike details in Settings</div></div><button class="secondary" onclick="showTab('settings')">Edit bike</button></div>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="label">Fuel entries</div><div class="metric" id="fuelCount">0</div><div class="small">Records saved</div></div>
+    <div class="card"><div class="label">Maintenance spend</div><div class="metric" id="maintSpend">₹0</div><div class="small">Total recorded</div></div>
+    <div class="card"><div class="label">Latest fuel economy</div><div class="metric" id="fuelEconomy">—</div><div class="small" id="fuelEconomyNote">Needs two valid fill-ups</div></div>
+    <div class="card"><div class="label">Fuel spend</div><div class="metric" id="fuelSpend">₹0</div><div class="small">Total recorded</div></div>
+  </div>
+  <div class="card"><div class="row"><div><h2 style="margin:0">Quick actions</h2><div class="small">Add a record in a few taps</div></div></div><div class="row" style="margin-top:13px"><button class="primary" onclick="showTab('fuel')">＋ Add fuel</button><button class="secondary" onclick="showTab('maintenance')">＋ Service record</button></div></div>
+  <div class="tabs">
+    <button class="tab active" data-tab="home" onclick="showTab('home')">Overview</button>
+    <button class="tab" data-tab="fuel" onclick="showTab('fuel')">Fuel log</button>
+    <button class="tab" data-tab="maintenance" onclick="showTab('maintenance')">Maintenance</button>
+    <button class="tab" data-tab="settings" onclick="showTab('settings')">Settings</button>
+  </div>
+  <section id="home" class="panel active">
+    <div class="card"><h2>Recent activity</h2><div id="recentList" class="empty">No records yet. Add your first fuel or maintenance entry.</div></div>
+    <div class="notice"><b>Prototype note:</b> Records are stored in this browser on this device. Export backups regularly. Fuel economy is an estimate based on the distance between recorded odometer readings and the later entry's litres; it is not suitable if fill-up records are incomplete or inconsistent.</div>
+  </section>
+  <section id="fuel" class="panel">
+    <div class="card"><h2>Add fuel entry</h2>
+      <form id="fuelForm">
+        <div class="formgrid"><div><label for="fuelDate">Date</label><input id="fuelDate" type="date" required></div><div><label for="fuelOdo">Odometer (km)</label><input id="fuelOdo" type="number" min="0" step="0.1" placeholder="e.g. 12500" required></div></div>
+        <div class="formgrid"><div><label for="fuelLitres">Fuel (litres)</label><input id="fuelLitres" type="number" min="0.01" step="0.01" placeholder="e.g. 6.5" required></div><div><label for="fuelPrice">Total cost (₹)</label><input id="fuelPrice" type="number" min="0" step="0.01" placeholder="e.g. 650" required></div></div>
+        <label for="fuelNote">Note (optional)</label><input id="fuelNote" maxlength="100" placeholder="Petrol station or note">
+        <button class="primary" style="width:100%;margin-top:15px" type="submit">Save fuel entry</button>
+      </form>
+    </div>
+    <div class="card"><div class="row"><h2>Fuel history</h2><button class="danger" onclick="clearRecords('fuel')">Clear</button></div><div id="fuelList" class="empty">No fuel entries yet.</div></div>
+  </section>
+  <section id="maintenance" class="panel">
+    <div class="card"><h2>Add maintenance record</h2>
+      <form id="maintForm">
+        <div class="formgrid"><div><label for="maintDate">Date</label><input id="maintDate" type="date" required></div><div><label for="maintOdo">Odometer (km)</label><input id="maintOdo" type="number" min="0" step="0.1" placeholder="e.g. 12000" required></div></div>
+        <label for="maintType">Service / work type</label><select id="maintType" required><option value="Regular service">Regular service</option><option value="Engine oil">Engine oil</option><option value="Tyres">Tyres</option><option value="Brakes">Brakes</option><option value="Chain and sprocket">Chain and sprocket</option><option value="Repair">Repair</option><option value="Other">Other</option></select>
+        <div class="formgrid"><div><label for="maintCost">Cost (₹)</label><input id="maintCost" type="number" min="0" step="0.01" placeholder="e.g. 1200" required></div><div><label for="nextOdo">Next service at (km, optional)</label><input id="nextOdo" type="number" min="0" step="1" placeholder="e.g. 15000"></div></div>
+        <label for="maintNote">Work done / note (optional)</label><input id="maintNote" maxlength="120" placeholder="Oil grade, parts changed, etc.">
+        <button class="primary" style="width:100%;margin-top:15px" type="submit">Save maintenance record</button>
+      </form>
+    </div>
+    <div class="card"><div class="row"><h2>Maintenance history</h2><button class="danger" onclick="clearRecords('maintenance')">Clear</button></div><div id="maintList" class="empty">No maintenance entries yet.</div></div>
+  </section>
+  <section id="settings" class="panel">
+    <div class="card"><h2>Motorcycle details</h2><form id="bikeForm">
+      <label for="bikeMake">Make and model</label><input id="bikeMake" maxlength="60" placeholder="e.g. Yamaha XSR 155" required>
+      <div class="formgrid"><div><label for="bikeYear">Year (optional)</label><input id="bikeYear" type="number" min="1950" max="2100" placeholder="e.g. 2026"></div><div><label for="bikeReg">Registration nickname (optional)</label><input id="bikeReg" maxlength="30" placeholder="e.g. My daily bike"></div></div>
+      <button class="primary" style="width:100%;margin-top:15px" type="submit">Save motorcycle</button>
+    </form></div>
+    <div class="card"><h2>Your data</h2><p class="small">Records stay in this browser on this device. Export a backup regularly. This prototype does not send your data to a server.</p><div class="row"><button class="secondary" onclick="exportData()">Export backup</button><button class="secondary" onclick="document.getElementById('importFile').click()">Import backup</button></div><input id="importFile" type="file" accept="application/json,.json" style="display:none"><button class="danger" style="width:100%;margin-top:12px" onclick="resetAll()">Delete all app data</button></div>
+  </section>
+  <footer>MotoCare prototype · Built as a learning project · Not affiliated with any vehicle manufacturer</footer>
+</main>
+<script>
+const KEY='motocare-prototype-v01';
+const blank={bike:{name:'',year:'',nickname:''},fuel:[],maintenance:[]};
+let state=load();
+function load(){try{return {...blank,...JSON.parse(localStorage.getItem(KEY)||'{}')};}catch(e){return structuredClone(blank)}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function money(n){return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(Number(n)||0)}
+function dateNow(){return new Date().toISOString().slice(0,10)}
+document.getElementById('fuelDate').value=dateNow();document.getElementById('maintDate').value=dateNow();
+function showTab(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));window.scrollTo({top:0,behavior:'smooth'})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function itemHTML(item,type){let title,meta;if(type==='fuel'){title=`Fuel · ${Number(item.litres).toFixed(2)} L`;meta=`${item.date} · ${item.odo} km · ${money(item.cost)}${item.note?' · '+esc(item.note):''}`}else{title=esc(item.type);meta=`${item.date} · ${item.odo} km · ${money(item.cost)}${item.nextOdo?' · Next at '+item.nextOdo+' km':''}${item.note?' · '+esc(item.note):''}`}return `<div class="item"><div class="row"><div style="min-width:0"><div class="itemtitle">${title}</div><div class="itemmeta">${meta}</div></div><button class="danger" style="padding:8px 10px;flex-shrink:0" onclick="deleteRecord('${type}',${Number(item.id)})" aria-label="Delete record">Delete</button></div></div>`}
+function deleteRecord(type,id){if(!confirm('Delete this individual record?'))return;state[type]=state[type].filter(x=>Number(x.id)!==Number(id));save()}
+function calcEconomy(){const rows=[...state.fuel].sort((a,b)=>Number(a.odo)-Number(b.odo));for(let i=rows.length-1;i>0;i--){const prev=rows[i-1],cur=rows[i],distance=Number(cur.odo)-Number(prev.odo);if(distance>0&&Number(cur.litres)>0){return {value:(distance/Number(cur.litres)).toFixed(1),note:`${distance.toFixed(0)} km ÷ ${Number(cur.litres).toFixed(2)} L between recorded fill-ups`}}}return null}
+function render(){document.getElementById('bikeName').textContent=state.bike.name||'My Motorcycle';document.getElementById('bikeMeta').textContent=[state.bike.year,state.bike.nickname].filter(Boolean).join(' · ')||'Add your bike details in Settings';document.getElementById('fuelCount').textContent=state.fuel.length;document.getElementById('maintSpend').textContent=money(state.maintenance.reduce((a,x)=>a+Number(x.cost||0),0));document.getElementById('fuelSpend').textContent=money(state.fuel.reduce((a,x)=>a+Number(x.cost||0),0));const economy=calcEconomy();document.getElementById('fuelEconomy').textContent=economy?economy.value+' km/L':'—';document.getElementById('fuelEconomyNote').textContent=economy?economy.note:'Needs two fill-ups with increasing odometer readings';document.getElementById('fuelList').innerHTML=state.fuel.length?[...state.fuel].reverse().map(x=>itemHTML(x,'fuel')).join(''):'<div class="empty">No fuel entries yet.</div>';document.getElementById('maintList').innerHTML=state.maintenance.length?[...state.maintenance].reverse().map(x=>itemHTML(x,'maintenance')).join(''):'<div class="empty">No maintenance entries yet.</div>';let all=[...state.fuel.map(x=>({...x,kind:'fuel'})),...state.maintenance.map(x=>({...x,kind:'maintenance'}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);document.getElementById('recentList').innerHTML=all.length?all.map(x=>itemHTML(x,x.kind)).join(''):'<div class="empty">No records yet. Add your first fuel or maintenance entry.</div>';document.getElementById('bikeMake').value=state.bike.name||'';document.getElementById('bikeYear').value=state.bike.year||'';document.getElementById('bikeReg').value=state.bike.nickname||''}
+document.getElementById('fuelForm').addEventListener('submit',e=>{e.preventDefault();state.fuel.push({id:Date.now(),date:fuelDate.value,odo:Number(fuelOdo.value),litres:Number(fuelLitres.value),cost:Number(fuelPrice.value),note:fuelNote.value.trim()});save();e.target.reset();fuelDate.value=dateNow();showTab('fuel')});
+document.getElementById('maintForm').addEventListener('submit',e=>{e.preventDefault();state.maintenance.push({id:Date.now(),date:maintDate.value,odo:Number(maintOdo.value),type:maintType.value,cost:Number(maintCost.value),nextOdo:nextOdo.value?Number(nextOdo.value):'',note:maintNote.value.trim()});save();e.target.reset();maintDate.value=dateNow();showTab('maintenance')});
+document.getElementById('bikeForm').addEventListener('submit',e=>{e.preventDefault();state.bike={name:bikeMake.value.trim(),year:bikeYear.value,nickname:bikeReg.value.trim()};save();alert('Motorcycle details saved.');showTab('home')});
+function clearRecords(type){if(confirm('Delete all '+(type==='fuel'?'fuel':'maintenance')+' records?')){state[type]=[];save()}}
+function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='motocare-backup.json';a.click();URL.revokeObjectURL(a.href)}
+document.getElementById('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!d.bike||!Array.isArray(d.fuel)||!Array.isArray(d.maintenance))throw Error();if(confirm('Replace current app data with this backup?')){state=d;save();alert('Backup imported.')}}catch(err){alert('Could not import this file. Please choose a valid MotoCare JSON backup.')}e.target.value=''});
+function resetAll(){if(confirm('Permanently delete all MotoCare data saved in this browser?')){state=structuredClone(blank);save()}}
+render();
+</script>
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log('Offline setup unavailable:', err));
+  });
+}
+</script>
+</body>
+</html>
